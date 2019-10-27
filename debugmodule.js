@@ -11,13 +11,12 @@
 
   // console.log "debugmodule.initialize - nothing to do"
   debugmodule.modulesToDebug = {
-    unbreaker: true,
-    // cliargumentsmodule: true
-    // configmodule: true
-    // generateprocessmodule: true
-    hookupmodule: true
+    unbreaker: true
   };
 
+  // cliargumentsmodule: true
+  // configmodule: true
+  // generateprocessmodule: true
   // modulegenmodule: true
   // pathhandlermodule: true
   // startupmodule: true
