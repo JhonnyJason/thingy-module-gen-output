@@ -58,10 +58,11 @@
       err = error;
       errLog('Error!');
       if (err instanceof Error) {
-        return console.log(err.message);
+        console.log(err.message);
       } else {
-        return console.log(err);
+        console.log(err);
       }
+      return console.log("\n");
     }
   };
 
