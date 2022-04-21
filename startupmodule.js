@@ -11,7 +11,7 @@ import {
 
 import c from 'chalk';
 
-import * as sp from "./syncprocessmodule.js";
+import * as gp from "./generateprocessmodule.js";
 
 import * as ca from "./cliargumentsmodule.js";
 
@@ -35,7 +35,7 @@ export var cliStartup = async function() {
   log("cliStartup");
   try {
     e = ca.extractArguments();
-    done = (await sp.execute(e.name, e.thingyPath));
+    done = (await gp.execute(e.name, e.thingyPath));
     if (done) {
       return successLog('All done!');
     } else {
@@ -44,7 +44,7 @@ export var cliStartup = async function() {
   } catch (error) {
     err = error;
     errLog('Error!');
-    console.log(err);
+    console.log(err.message);
     return console.log("\n");
   }
 };

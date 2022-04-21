@@ -15,7 +15,7 @@ import M from "mustache";
 
 import pathModule from "path";
 
-import * as pathHandler from "./pathhandlermodule.js";
+import * as ph from "./pathhandlermodule.js";
 
 //endregion
 
@@ -32,17 +32,14 @@ Task = class Task {
 };
 
 CoffeeGenTask = (function() {
-  var templatePath;
-
   class CoffeeGenTask extends Task {
     async do() {
-      var fileContent, fileName, filePath, template;
+      var fileContent, fileName, filePath;
       log("do CoffeeGenTask for module " + this.moduleName);
       fileName = this.moduleName + ".coffee";
-      filePath = pathModule.resolve(pathHandler.modulePath, fileName);
+      filePath = pathModule.resolve(ph.getModulePath(), fileName);
       // log "filePath: " + filePath
-      template = (await fs.readFile(templatePath, "utf-8"));
-      fileContent = M.render(template, {
+      fileContent = M.render(this.template, {
         moduleName: this.moduleName
       });
       
@@ -52,26 +49,33 @@ CoffeeGenTask = (function() {
 
   };
 
-  templatePath = pathModule.resolve(__dirname, "file-templates/coffee.M");
+  CoffeeGenTask.prototype.template = `############################################################
+#region debug
+import { createLogFunctions } from "thingy-debug"
+{log, olog} = createLogFunctions("{{moduleName}}")
+#endregion
+
+############################################################
+export initialize = ->
+    log "initialize"
+    #Implement or Remove :-)
+    return`;
 
   return CoffeeGenTask;
 
 }).call(this);
 
 PugGenTask = (function() {
-  var templatePath;
-
   class PugGenTask extends Task {
     async do() {
-      var fileContent, fileName, filePath, pugname, template;
+      var fileContent, fileName, filePath, pugname;
       log("do PugGenTask for module " + this.moduleName);
       pugname = getPugName(this.moduleName);
       // log "pugname: " + pugname
       fileName = pugname + ".pug";
-      filePath = pathModule.resolve(pathHandler.modulePath, fileName);
+      filePath = pathModule.resolve(ph.getModulePath(), fileName);
       // log "filePath: " + filePath
-      template = (await fs.readFile(templatePath, "utf-8"));
-      fileContent = M.render(template, {
+      fileContent = M.render(this.template, {
         moduleName: pugname
       });
       // log "\n - - - \nfileContent:\n" + fileContent
@@ -80,26 +84,24 @@ PugGenTask = (function() {
 
   };
 
-  templatePath = pathModule.resolve(__dirname, "file-templates/pug.M");
+  PugGenTask.prototype.template = `//- {{moduleName}} structure
+\#{{moduleName}}`;
 
   return PugGenTask;
 
 }).call(this);
 
 StyleGenTask = (function() {
-  var templatePath;
-
   class StyleGenTask extends Task {
     async do() {
-      var fileContent, fileName, filePath, pugname, template;
+      var fileContent, fileName, filePath, pugname;
       log("do StyleGenTask for module " + this.moduleName);
       fileName = "styles.styl";
       pugname = getPugName(this.moduleName);
       // log "pugname: " + pugname
-      filePath = pathModule.resolve(pathHandler.modulePath, fileName);
+      filePath = pathModule.resolve(ph.getModulePath(), fileName);
       // log "filePath: " + filePath
-      template = (await fs.readFile(templatePath, "utf-8"));
-      fileContent = M.render(template, {
+      fileContent = M.render(this.template, {
         moduleName: pugname
       });
       // log "\n - - - \nfileContent:\n" + fileContent
@@ -108,7 +110,11 @@ StyleGenTask = (function() {
 
   };
 
-  templatePath = pathModule.resolve(__dirname, "file-templates/styl.M");
+  StyleGenTask.prototype.template = `// {{moduleName}} styles
+\#{{moduleName}}
+    width 100%
+    min-height 20px
+    background-color rgba(0, 0, 0, 0.2)`;
 
   return StyleGenTask;
 
@@ -133,7 +139,7 @@ getPugName = function(name) {
 generateModuleDirectory = async function() {
   var dirPath, result;
   log("generateModuleDirectory");
-  dirPath = pathHandler.modulePath;
+  dirPath = ph.getModulePath();
   result = (await fs.mkdirs(dirPath));
   log(result);
 };

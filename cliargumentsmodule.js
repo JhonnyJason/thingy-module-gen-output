@@ -37,6 +37,7 @@ Examples
 getOptions = function() {
   log("getOptions");
   return {
+    importMeta: import.meta,
     flags: {
       name: {
         type: "string",

@@ -11,11 +11,11 @@ import {
 
 import c from 'chalk';
 
-import * as userInquiry from "userinquirymodule.js";
+import * as ui from "./userinquirymodule.js";
 
-import * as pathHandler from "pathhandlermodule.js";
+import * as ph from "./pathhandlermodule.js";
 
-import * as modulegen from "modulegenmodule.js";
+import * as mg from "./modulegenmodule.js";
 
 //endregion
 
@@ -28,9 +28,9 @@ successMessage = function(arg) {
 export var execute = async function(name, path) {
   var files;
   log("execute");
-  await pathHandler.checkPaths(name, path);
+  await ph.checkPaths(name, path);
   successMessage(" Module " + name + " may be created!");
-  files = (await userInquiry.doInquiry());
-  await modulegen.generate(files, name);
+  files = (await ui.doInquiry());
+  await mg.generate(files, name);
   return true;
 };
